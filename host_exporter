@@ -1,0 +1,20 @@
+#!/bin/bash
+
+HOSTNAMECTL=$(hostnamectl)
+TEXTFILE_COLLECTOR_DIR=/var/lib/node_exporter/textfile_collector
+PROM_FILE=$TEXTFILE_COLLECTOR_DIR/host.prom
+TEMP_FILE=${PROM_FILE}.$$
+
+mkdir -p $TEXTFILE_COLLECTOR_DIR
+
+echo -n 'host{' > $TEMP_FILE
+echo "$HOSTNAMECTL" | grep "Static hostname"  | awk 'BEGIN {FS=": "};{printf "host=\""$2"\""}' >> $TEMP_FILE
+echo "$HOSTNAMECTL" | grep "Chassis"          | awk 'BEGIN {FS=": "};{printf ",chassis=\""$2"\""}' >> $TEMP_FILE
+echo "$HOSTNAMECTL" | grep "Machine ID"       | awk 'BEGIN {FS=": "};{printf ",machineid=\""$2"\""}' >> $TEMP_FILE
+echo "$HOSTNAMECTL" | grep "Boot ID"          | awk 'BEGIN {FS=": "};{printf ",bootid=\""$2"\""}' >> $TEMP_FILE
+echo "$HOSTNAMECTL" | grep "Operating System" | awk 'BEGIN {FS=": "};{printf ",os=\""$2"\""}' >> $TEMP_FILE
+echo "$HOSTNAMECTL" | grep "Kernel"           | awk 'BEGIN {FS=": "};{printf ",kernel=\""$2"\""}' >> $TEMP_FILE
+echo "$HOSTNAMECTL" | grep "Architecture"     | awk 'BEGIN {FS=": "};{printf ",arch=\""$2"\""}' >> $TEMP_FILE
+echo '} 1' >> $TEMP_FILE
+
+mv $TEMP_FILE $PROM_FILE

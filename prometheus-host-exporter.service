@@ -1,0 +1,10 @@
+[Unit]
+Description=Prometheus Host Exporter
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/host_exporter
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
