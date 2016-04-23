@@ -25,5 +25,5 @@ Make sure your node exporter uses `textfile` in `--collectors.enabled` and add t
 ## Group this information in your queries
 
 ```
-sum by (instance)(irate(node_cpu{job="node",mode=~"^(system|user)$"}[5m])) * on (instance) group_right(host) host
+sum by (instance)(irate(node_cpu{job="node",mode=~"^(system|user)$"}[5m])) * on (instance) group_right(host,chassis,machineid,bootid,os,kernel,arch) host
 ```
